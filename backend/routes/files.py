@@ -1,9 +1,3 @@
-
-from flask import send_file
-import io
-from services.azure_blob import download_blob
-from services.azure_blob import delete_file
-
 from flask import (
     Blueprint,
     render_template,
@@ -11,11 +5,20 @@ from flask import (
     redirect,
     url_for,
     flash,
-    session
+    session,
+    send_file
 )
 
+import io
+import os
+
 from models import db, File
-from services.azure_blob import upload_file
+
+from services.azure_blob import (
+    upload_file,
+    download_blob,
+    delete_file
+)
 
 files = Blueprint("files", __name__)
 
@@ -38,21 +41,32 @@ def upload():
 
         try:
 
-            # Upload to Azure
+            # Calculate file size
+            uploaded_file.seek(0, os.SEEK_END)
+            file_size = uploaded_file.tell()
+            uploaded_file.seek(0)
+
+            # Get file extension
+            extension = os.path.splitext(uploaded_file.filename)[1]
+            extension = extension.replace(".", "").lower()
+
+            # Upload to Azure Blob Storage
             blob_info = upload_file(uploaded_file)
 
-            # Save metadata in SQLite
+            # Save metadata
             new_file = File(
                 original_filename=uploaded_file.filename,
                 blob_name=blob_info["blob_name"],
                 content_type=blob_info["content_type"],
+                file_size=file_size,
+                file_extension=extension,
                 uploaded_by=session["user_id"]
             )
 
             db.session.add(new_file)
             db.session.commit()
 
-            flash("File uploaded successfully to Azure!", "success")
+            flash("File uploaded successfully!", "success")
 
             return redirect(url_for("files.my_files"))
 
@@ -60,11 +74,12 @@ def upload():
 
             db.session.rollback()
 
-            flash(f"Upload failed: {str(e)}", "danger")
+            flash(f"Upload failed: {e}", "danger")
 
             return redirect(url_for("files.upload"))
 
     return render_template("upload.html")
+
 
 # ---------------- My Files ---------------- #
 
@@ -74,9 +89,27 @@ def my_files():
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
 
-    user_files = File.query.filter_by(
-        uploaded_by=session["user_id"]
-    ).all()
+    user_files = (
+        File.query
+        .filter_by(uploaded_by=session["user_id"])
+        .order_by(File.upload_date.desc())
+        .all()
+    )
+
+    # Convert bytes to readable format
+    for file in user_files:
+
+        if file.file_size < 1024:
+            file.display_size = f"{file.file_size} B"
+
+        elif file.file_size < 1024 * 1024:
+            file.display_size = f"{file.file_size / 1024:.2f} KB"
+
+        elif file.file_size < 1024 * 1024 * 1024:
+            file.display_size = f"{file.file_size / (1024 * 1024):.2f} MB"
+
+        else:
+            file.display_size = f"{file.file_size / (1024 * 1024 * 1024):.2f} GB"
 
     return render_template(
         "myfiles.html",
@@ -97,14 +130,22 @@ def download(file_id):
         uploaded_by=session["user_id"]
     ).first_or_404()
 
-    file_data = download_blob(file.blob_name)
+    try:
 
-    return send_file(
-        io.BytesIO(file_data),
-        as_attachment=True,
-        download_name=file.original_filename,
-        mimetype=file.content_type
-    )
+        file_data = download_blob(file.blob_name)
+
+        return send_file(
+            io.BytesIO(file_data),
+            as_attachment=True,
+            download_name=file.original_filename,
+            mimetype=file.content_type
+        )
+
+    except Exception as e:
+
+        flash(f"Download failed: {e}", "danger")
+
+        return redirect(url_for("files.my_files"))
 
 
 # ---------------- Delete ---------------- #
@@ -122,10 +163,11 @@ def delete(file_id):
 
     try:
 
+        # Delete blob from Azure
         delete_file(file.blob_name)
 
+        # Delete metadata from database
         db.session.delete(file)
-
         db.session.commit()
 
         flash("File deleted successfully!", "success")
@@ -134,6 +176,6 @@ def delete(file_id):
 
         db.session.rollback()
 
-        flash(f"Delete failed: {str(e)}", "danger")
+        flash(f"Delete failed: {e}", "danger")
 
     return redirect(url_for("files.my_files"))

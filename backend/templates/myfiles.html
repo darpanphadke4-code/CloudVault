@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+]{% extends "base.html" %}
 
 {% block title %}
 My Files | CloudVault
@@ -8,47 +8,129 @@ My Files | CloudVault
 
 <div class="container py-5">
 
-    <h2 class="mb-4">📁 My Files</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+
+        <h2 class="mb-3 mb-md-0">
+            📁 My Files
+        </h2>
+
+        <div class="d-flex gap-2">
+
+            <input
+                type="text"
+                id="searchInput"
+                class="form-control"
+                placeholder="🔍 Search files..."
+                style="width:250px;">
+
+            <a href="/upload" class="btn btn-primary">
+                📤 Upload
+            </a>
+
+        </div>
+
+    </div>
 
     {% if files %}
 
     <div class="table-responsive">
 
-        <table class="table table-bordered table-hover align-middle">
+        <table
+            id="filesTable"
+            class="table table-hover align-middle shadow">
 
             <thead class="table-dark">
+
                 <tr>
-                    <th>Filename</th>
-                    <th>Upload Date</th>
-                    <th width="180">Actions</th>
+
+                    <th>File</th>
+
+                    <th>Type</th>
+
+                    <th>Size</th>
+
+                    <th>Uploaded</th>
+
+                    <th>Actions</th>
+
                 </tr>
+
             </thead>
 
             <tbody>
 
             {% for file in files %}
 
-                <tr>
+            <tr class="file-row">
 
-                    <td>{{ file.original_filename }}</td>
+                <td>
 
-                    <td>{{ file.upload_date }}</td>
+                    {% if file.file_extension == "pdf" %}
+                        📄
+                    {% elif file.file_extension in ["png","jpg","jpeg","gif"] %}
+                        🖼️
+                    {% elif file.file_extension in ["zip","rar","7z"] %}
+                        📦
+                    {% elif file.file_extension in ["doc","docx"] %}
+                        📝
+                    {% elif file.file_extension in ["ppt","pptx"] %}
+                        📊
+                    {% elif file.file_extension in ["xls","xlsx"] %}
+                        📈
+                    {% elif file.file_extension in ["mp4","avi","mkv"] %}
+                        🎥
+                    {% elif file.file_extension in ["mp3","wav"] %}
+                        🎵
+                    {% elif file.file_extension in ["py","java","cpp","c","html","css","js"] %}
+                        💻
+                    {% else %}
+                        📁
+                    {% endif %}
 
-                    <td>
+                    {{ file.original_filename }}
 
-                        <a href="/download/{{ file.id }}"
-                           class="btn btn-success btn-sm">
-                            Download
-                        </a>
+                </td>
 
-                        <a href="/delete/{{ file.id }}"
-                           class="btn btn-danger btn-sm">
-                            Delete
-                        </a>
+                <td>
 
-                    </td>
+                    {{ file.file_extension|upper }}
 
-                </tr>
+                </td>
+
+                <td>
+
+                    {{ file.display_size }}
+
+                </td>
+
+                <td>
+
+                    {{ file.upload_date.strftime("%d %b %Y") }}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="/download/{{ file.id }}"
+                        class="btn btn-success btn-sm">
+
+                        ⬇ Download
+
+                    </a>
+
+                    <a
+                        href="/delete/{{ file.id }}"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this file?');">
+
+                        🗑 Delete
+
+                    </a>
+
+                </td>
+
+            </tr>
 
             {% endfor %}
 
@@ -60,16 +142,60 @@ My Files | CloudVault
 
     {% else %}
 
-    <div class="alert alert-info">
-        No files uploaded yet.
+    <div class="alert alert-info text-center">
+
+        <h5>No files uploaded yet.</h5>
+
+        <p class="mb-0">
+
+            Upload your first file to start using CloudVault.
+
+        </p>
+
     </div>
 
     {% endif %}
 
     <a href="/dashboard" class="btn btn-secondary mt-3">
-        Back to Dashboard
+
+        ← Back to Dashboard
+
     </a>
 
 </div>
+
+<script>
+
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+
+    searchInput.addEventListener("keyup", function () {
+
+        const filter = this.value.toLowerCase();
+
+        const rows = document.querySelectorAll(".file-row");
+
+        rows.forEach(function(row) {
+
+            const text = row.innerText.toLowerCase();
+
+            if (text.includes(filter)) {
+
+                row.style.display = "";
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+    });
+
+}
+
+</script>
 
 {% endblock %}

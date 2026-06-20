@@ -1,23 +1,26 @@
 # Python
-__pycache__/
-*.py[cod]
-
-# Virtual Environment
-venv/
 backend/venv/
+backend/__pycache__/
+backend/**/*.pyc
 
-# Database
-*.db
-
-# Environment Variables
-.env
+# Environment variables
 backend/.env
+
+# Local SQLite database
+backend/cloudvault.db
+
+# Local uploads
+backend/uploads/
+
+# Flask instance folder
+backend/instance/
 
 # VS Code
 .vscode/
 
-# Uploads
-backend/uploads/
+# PyCharm
+.idea/
 
 # Python cache
-.pytest_cache/
+**/__pycache__/
+*.py[cod]

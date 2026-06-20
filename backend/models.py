@@ -28,6 +28,10 @@ class File(db.Model):
 
     content_type = db.Column(db.String(100))
 
+    file_size = db.Column(db.Integer, nullable=False)
+
+    file_extension = db.Column(db.String(20))
+
     uploaded_by = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),

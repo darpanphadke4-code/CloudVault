@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | CloudVault
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        Welcome, {{ name }} 👋
+    </h2>
+
+    <div class="row">
+
+        <!-- Total Files -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5>Total Files</h5>
+                    <h2>0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storage -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5>Storage Used</h5>
+                    <h2>0 MB</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h5>Status</h5>
+                    <h2 class="text-success">Active</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow mt-4">
+
+        <div class="card-body">
+
+            <h4 class="mb-4">Quick Actions</h4>
+
+            <a href="/upload" class="btn btn-primary me-2">
+                📤 Upload File
+            </a>
+
+            <a href="/myfiles" class="btn btn-success me-2">
+                📁 My Files
+            </a>
+
+            <a href="/logout" class="btn btn-danger">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow mt-4">
+
+        <div class="card-body">
+
+            <h4>Recent Activity</h4>
+
+            <hr>
+
+            <p>✅ Logged into CloudVault</p>
+
+            <p>📂 Ready to upload your files.</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

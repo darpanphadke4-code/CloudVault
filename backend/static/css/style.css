@@ -1,0 +1,189 @@
+/* ===========================
+   Global
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    height:100%;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    font-family:'Poppins',sans-serif;
+
+    background:#eef2f7;
+
+    color:#222;
+
+}
+
+
+/* ===========================
+   Navbar
+=========================== */
+
+.navbar{
+
+    background:linear-gradient(90deg,#0d1b2a,#1b263b);
+
+    padding:15px 0;
+
+}
+
+.navbar-brand{
+
+    font-size:28px;
+
+    font-weight:600;
+
+}
+
+.navbar .btn{
+
+    border-radius:10px;
+
+}
+
+
+/* ===========================
+   Main Content
+=========================== */
+
+main{
+
+    flex:1;
+
+}
+
+
+/* ===========================
+   Hero Section
+=========================== */
+
+.hero{
+
+    background:linear-gradient(135deg,#0078D4,#00B4DB);
+
+    color:white;
+
+    text-align:center;
+
+    padding:120px 20px;
+
+}
+
+.hero h1{
+
+    font-size:3.3rem;
+
+    font-weight:700;
+
+}
+
+.hero p{
+
+    font-size:1.25rem;
+
+    margin-top:20px;
+
+}
+
+.hero .btn{
+
+    margin-top:30px;
+
+    border-radius:12px;
+
+    padding:12px 30px;
+
+}
+
+
+/* ===========================
+   Cards
+=========================== */
+
+.card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.12);
+
+}
+
+.card-body{
+
+    padding:35px;
+
+}
+
+
+/* ===========================
+   Form
+=========================== */
+
+.form-control{
+
+    border-radius:10px;
+
+    padding:12px;
+
+}
+
+.btn-primary{
+
+    border-radius:10px;
+
+}
+
+
+/* ===========================
+   Footer
+=========================== */
+
+footer{
+
+    background:#1b263b;
+
+    color:white;
+
+    text-align:center;
+
+    padding:18px;
+
+    margin-top:auto;
+
+}
+
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:768px){
+
+.hero{
+
+padding:80px 20px;
+
+}
+
+.hero h1{
+
+font-size:2.3rem;
+
+}
+
+}

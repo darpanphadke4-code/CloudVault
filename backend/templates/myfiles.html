@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Files | CloudVault
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">📁 My Files</h2>
+
+    {% if files %}
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Filename</th>
+                    <th>Upload Date</th>
+                    <th width="180">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for file in files %}
+
+                <tr>
+
+                    <td>{{ file.original_filename }}</td>
+
+                    <td>{{ file.upload_date }}</td>
+
+                    <td>
+
+                        <a href="/download/{{ file.id }}"
+                           class="btn btn-success btn-sm">
+                            Download
+                        </a>
+
+                        <a href="/delete/{{ file.id }}"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info">
+        No files uploaded yet.
+    </div>
+
+    {% endif %}
+
+    <a href="/dashboard" class="btn btn-secondary mt-3">
+        Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+backend/venv/
+
+# Database
+*.db
+
+# Environment Variables
+.env
+backend/.env
+
+# VS Code
+.vscode/
+
+# Uploads
+backend/uploads/
+
+# Python cache
+.pytest_cache/

@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask_bcrypt import Bcrypt
 
@@ -29,11 +28,12 @@ app.register_blueprint(auth)
 app.register_blueprint(dashboard)
 app.register_blueprint(files)
 
-# Create Database
-with app.app_context():
-    db.create_all()
 
+# Run locally
 if __name__ == "__main__":
+
+    # Create database tables only for local development
+    with app.app_context():
+        db.create_all()
+
     app.run(debug=True)
-
-
